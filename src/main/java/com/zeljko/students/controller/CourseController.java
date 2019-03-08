@@ -1,13 +1,13 @@
 package com.zeljko.students.controller;
 
 import com.zeljko.students.entity.Course;
+import com.zeljko.students.exception.StudentNotFoundException;
 import com.zeljko.students.service.CourseService;
+import org.assertj.core.util.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/courses")
@@ -20,34 +20,44 @@ public class CourseController {
         this.courseService = courseService;
     }
 
-    @RequestMapping( value = "/", method = RequestMethod.GET )
+    @GetMapping("/")
     public Iterable<Course> list(){
         return courseService.list();
     }
 
-    @RequestMapping( value = "/", method = RequestMethod.POST )
+    @PostMapping("/")
     public Course create(@RequestBody Course course){
         return courseService.create(course);
     }
 
-    @RequestMapping( value = "/{id}", method = RequestMethod.GET )
-    public Course read(@PathVariable(value="id") long id){
+    @GetMapping("/{id}")
+    public Course read(@PathVariable long id){
+
+        List<Course> courseList = Lists.newArrayList(courseService.list());
+
+        if ( (id >= courseList.size()) || (id < 0) ) {
+            throw new StudentNotFoundException("Course with id = " + id + " not found");
+        }
+
         return courseService.read(id);
     }
 
-    @RequestMapping( value = "/{id}", method = RequestMethod.PUT )
-    public Course update(@PathVariable(value="id") long id, @RequestBody Course course){
+    @PutMapping("/{id}")
+    public Course update(@PathVariable long id, @RequestBody Course course){
         return courseService.update(id, course);
     }
 
-    @RequestMapping( value = "/{id}", method = RequestMethod.PATCH )
-    public Course patch(@PathVariable(value="id") long id, @RequestBody Course course){
+    @PatchMapping("/{id}")
+    public Course patch(@PathVariable long id, @RequestBody Course course){
         return courseService.patch(id, course);
     }
 
-    @RequestMapping( value = "/{id}", method = RequestMethod.DELETE )
-    public void delete(@PathVariable(value="id") long id){
+    @DeleteMapping("/{id}")
+    public String delete(@PathVariable long id){
+
         courseService.delete(id);
+
+        return "Deleted course with id = " + id;
     }
 
 }

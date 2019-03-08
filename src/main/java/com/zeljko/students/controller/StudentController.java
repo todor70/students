@@ -1,13 +1,13 @@
 package com.zeljko.students.controller;
 
 import com.zeljko.students.entity.Student;
+import com.zeljko.students.exception.StudentNotFoundException;
 import com.zeljko.students.service.StudentService;
+import org.assertj.core.util.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/students")
@@ -20,34 +20,44 @@ public class StudentController {
         this.studentService = studentService;
     }
 
-    @RequestMapping( value = "/", method = RequestMethod.GET )
+    @GetMapping("/")
     public Iterable<Student> list(){
         return studentService.list();
     }
 
-    @RequestMapping( value = "/", method = RequestMethod.POST )
+    @PostMapping("/")
     public Student create(@RequestBody Student student){
         return studentService.create(student);
     }
 
-    @RequestMapping( value = "/{id}", method = RequestMethod.GET )
-    public Student read(@PathVariable(value="id") long id){
+    @GetMapping("/{id}")
+    public Student read(@PathVariable long id){
+
+        List<Student> studentList = Lists.newArrayList(studentService.list());
+
+        if ( (id >= studentList.size()) || (id < 0) ) {
+            throw new StudentNotFoundException("Student with id = " + id + " not found");
+        }
+
         return studentService.read(id);
     }
 
-    @RequestMapping( value = "/{id}", method = RequestMethod.PUT )
-    public Student update(@PathVariable(value="id") long id, @RequestBody Student student){
+    @PutMapping("/{id}")
+    public Student update(@PathVariable long id, @RequestBody Student student){
         return studentService.update(id, student);
     }
 
-    @RequestMapping( value = "/{id}", method = RequestMethod.PATCH )
-    public Student patch(@PathVariable(value="id") long id, @RequestBody Student student){
+    @PatchMapping("/{id}")
+    public Student patch(@PathVariable long id, @RequestBody Student student){
         return studentService.patch(id, student);
     }
 
-    @RequestMapping( value = "/{id}", method = RequestMethod.DELETE )
-    public void delete(@PathVariable(value="id") long id){
+    @DeleteMapping("/{id}")
+    public String delete(@PathVariable long id){
+
         studentService.delete(id);
+
+        return "Deleted student with id = " + id;
     }
 
 }
