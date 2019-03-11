@@ -2,9 +2,11 @@ package com.zeljko.students.service;
 
 import com.zeljko.students.entity.Course;
 
+import java.util.List;
+
 public interface CourseService {
 
-    Iterable<Course> list();
+    List<Course> list();
 
     Course create(Course course);
 

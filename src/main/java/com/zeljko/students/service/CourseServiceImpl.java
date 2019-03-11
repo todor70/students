@@ -5,6 +5,8 @@ import com.zeljko.students.repository.CourseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CourseServiceImpl implements CourseService {
 
@@ -16,7 +18,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Iterable<Course> list() {
+    public List<Course> list() {
         return courseRepository.findAll();
     }
 

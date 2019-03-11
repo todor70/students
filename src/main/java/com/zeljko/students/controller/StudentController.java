@@ -3,7 +3,6 @@ package com.zeljko.students.controller;
 import com.zeljko.students.entity.Student;
 import com.zeljko.students.exception.StudentNotFoundException;
 import com.zeljko.students.service.StudentService;
-import org.assertj.core.util.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +20,7 @@ public class StudentController {
     }
 
     @GetMapping("/")
-    public Iterable<Student> list(){
+    public List<Student> list(){
         return studentService.list();
     }
 
@@ -33,9 +32,7 @@ public class StudentController {
     @GetMapping("/{id}")
     public Student read(@PathVariable long id){
 
-        List<Student> studentList = Lists.newArrayList(studentService.list());
-
-        if ( (id >= studentList.size()) || (id < 0) ) {
+        if ( (id >= studentService.list().size()) || (id < 0) ) {
             throw new StudentNotFoundException("Student with id = " + id + " not found");
         }
 

@@ -2,9 +2,11 @@ package com.zeljko.students.service;
 
 import com.zeljko.students.entity.Student;
 
+import java.util.List;
+
 public interface StudentService {
 
-    Iterable<Student> list();
+    List<Student> list();
 
     Student create(Student student);
 
